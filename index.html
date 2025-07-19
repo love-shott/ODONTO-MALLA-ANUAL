@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Malla Interactiva Odontología – Anual</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fceeff;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+    h1 {
+      color: #8a2be2;
+      margin-bottom: 1rem;
+    }
+    .malla {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    .anio {
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr;
+      gap: 1rem;
+      background: #fdfbff;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    .anio-label {
+      writing-mode: vertical-rl;
+      text-align: center;
+      font-weight: bold;
+      color: #5d3395;
+      font-size: 0.9rem;
+    }
+    .semestre {
+      background: #f4f0fb;
+      border-radius: 10px;
+      padding: .5rem;
+    }
+    .semestre h3 {
+      text-align: center;
+      color: #5d3395;
+      margin-bottom: .5rem;
+    }
+    .materia {
+      background: #e5f0ff;
+      border-left: 6px solid #7aa6ff;
+      border-radius: 6px;
+      padding: 0.4rem 0.6rem;
+      margin-bottom: .4rem;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: 0.9rem;
+    }
+    .materia.aprobado {
+      background: #ffc0cb;
+      border-left-color: #ff69b4;
+      color: #440014;
+      font-weight: bold;
+    }
+    .materia.disabled {
+      background: #ddd3f5;
+      border-left-color: #aaa;
+      color: #888;
+    }
+    .materia.anual {
+      grid-column: 2 / 4;
+    }
+    label {
+      flex: 1;
+      cursor: pointer;
+    }
+    input[type="checkbox"]:disabled + label {
+      cursor: default;
+    }
+    .btn-reset {
+      margin-bottom: 1rem;
+      background: #ffb6c1;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Interactiva – Odontología (por Años y Semestres)</h1>
+  <button class="btn-reset" onclick="resetearMalla()">🔄 Resetear malla</button>
+  <div class="malla" id="malla"></div>
+
+  <script>
+    const ramos = [...]; // <-- Aquí va tu lista de ramos, usa la lista que ya tienes
+    const sincronizados = [
+      ['adulto_i', 'adulto_i_b'],
+      ['nino_i', 'nino_i'],
+      ['adulto_ii', 'adulto_ii'],
+      ['nino_ii', 'nino_ii']
+    ];
+    const ramosAnuales = new Set(['adulto_i', 'adulto_i_b', 'nino_i', 'nino_ii']);
+
+    function prereqsAprobados(prereqs, estado) {
+      return prereqs.every(id => estado[id]);
+    }
+
+    function guardar() {
+      const estado = {};
+      ramos.forEach(r => {
+        const cb = document.getElementById(r.id);
+        if (cb) estado[r.id] = cb.checked;
+      });
+      localStorage.setItem('estadoMallaGaby', JSON.stringify(estado));
+    }
+
+    function cargar() {
+      return JSON.parse(localStorage.getItem('estadoMallaGaby')) || {};
+    }
+
+    function crearMalla() {
+      const cont = document.getElementById("malla");
+      cont.innerHTML = "";
+      const estado = cargar();
+
+      for (let año = 1; año <= 6; año++) {
+        const grid = document.createElement("div");
+        grid.className = "anio";
+
+        const labelAño = document.createElement("div");
+        labelAño.className = "anio-label";
+        labelAño.textContent = `Año ${año}`;
+        grid.appendChild(labelAño);
+
+        const sem1 = document.createElement("div");
+        sem1.className = "semestre";
+        const h1 = document.createElement("h3");
+        h1.textContent = `Semestre ${(año - 1) * 2 + 1}`;
+        sem1.appendChild(h1);
+
+        const sem2 = document.createElement("div");
+        sem2.className = "semestre";
+        const h2 = document.createElement("h3");
+        h2.textContent = `Semestre ${(año - 1) * 2 + 2}`;
+        sem2.appendChild(h2);
+
+        grid.appendChild(sem1);
+        grid.appendChild(sem2);
+
+        const yaMostrados = new Set();
+
+        ramos.forEach(r => {
+          const sem = r.semestre;
+          const currentYear = Math.ceil(sem / 2);
+          if (currentYear !== año) return;
+
+          if (ramosAnuales.has(r.id)) {
+            const duplicado = sincronizados.find(pair => pair.includes(r.id));
+            const idMostrar = duplicado ? duplicado[0] : r.id;
+            if (yaMostrados.has(idMostrar)) return;
+            yaMostrados.add(idMostrar);
+          }
+
+          const div = document.createElement("div");
+          div.className = "materia";
+
+          const check = document.createElement("input");
+          check.type = "checkbox";
+          check.id = r.id;
+          check.checked = !!estado[r.id];
+
+          const habil = prereqsAprobados(r.prereq, estado);
+          if (!habil) {
+            check.disabled = true;
+            div.classList.add("disabled");
+            check.checked = false;
+          } else if (check.checked) {
+            div.classList.add("aprobado");
+          }
+
+          check.addEventListener("change", () => {
+            sincronizados.forEach(pair => {
+              if (pair.includes(r.id)) {
+                pair.forEach(id => {
+                  const cb = document.getElementById(id);
+                  if (cb && cb !== check) cb.checked = check.checked;
+                });
+              }
+            });
+            actualizar();
+            guardar();
+          });
+
+          const label = document.createElement("label");
+          label.htmlFor = r.id;
+          label.textContent = r.nombre;
+
+          div.appendChild(check);
+          div.appendChild(label);
+
+          if (ramosAnuales.has(r.id)) {
+            div.classList.add("anual");
+            grid.appendChild(div);
+          } else {
+            const target = sem % 2 === 1 ? sem1 : sem2;
+            target.appendChild(div);
+          }
+        });
+
+        cont.appendChild(grid);
+      }
+    }
+
+    function actualizar() {
+      const estado = cargar();
+      ramos.forEach(r => {
+        const cb = document.getElementById(r.id);
+        const div = cb?.parentElement;
+        if (!cb || !div) return;
+
+        const habil = prereqsAprobados(r.prereq, estado);
+        if (!habil) {
+          cb.disabled = true;
+          cb.checked = false;
+          div.classList.add("disabled");
+          div.classList.remove("aprobado");
+        } else {
+          cb.disabled = false;
+          div.classList.remove("disabled");
+          cb.checked ? div.classList.add("aprobado") : div.classList.remove("aprobado");
+        }
+      });
+    }
+
+    function resetearMalla() {
+      localStorage.removeItem("estadoMallaGaby");
+      crearMalla();
+    }
+
+    crearMalla();
+  </script>
+</body>
+</html>
