@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Malla Odontología – Completa por Año</title>
+  <title>Malla Interactiva Odontología – Anual</title>
   <style>
     body {
       font-family: sans-serif;
@@ -69,9 +69,11 @@
     }
     .materia.anual {
       grid-column: 2 / 4;
-      background: #d0e8ff;
     }
-    label { flex: 1; cursor: pointer; }
+    label {
+      flex: 1;
+      cursor: pointer;
+    }
     input[type="checkbox"]:disabled + label {
       cursor: default;
     }
@@ -87,32 +89,28 @@
   </style>
 </head>
 <body>
-  <h1>Malla Interactiva – Odontología Completa</h1>
+  <h1>Malla Interactiva – Odontología (por Años y Semestres)</h1>
   <button class="btn-reset" onclick="resetearMalla()">🔄 Resetear malla</button>
   <div class="malla" id="malla"></div>
 
   <script>
     const ramos = [
-      // Semestre 1
       { id: 'anatomia', nombre: 'Anatomía Humana', semestre: 1, prereq: [] },
       { id: 'bio_mol', nombre: 'Biología Molecular y Genética', semestre: 1, prereq: [] },
       { id: 'quimica', nombre: 'Química y Bioquímica', semestre: 1, prereq: [] },
       { id: 'bienestar', nombre: 'Bienestar, Autocuidado y Estilos de Vida', semestre: 1, prereq: [] },
       { id: 'integ_i', nombre: 'Odontología Integrada I', semestre: 1, prereq: [] },
-      // Semestre 2
       { id: 'bucomax', nombre: 'Anatomía Bucomaxilofacial', semestre: 2, prereq: ['anatomia'] },
       { id: 'bioquim_micro', nombre: 'Bioquímica y Microbiología Clínica', semestre: 2, prereq: ['quimica', 'bio_mol'] },
       { id: 'histologia', nombre: 'Histología General y Oral', semestre: 2, prereq: ['anatomia', 'bio_mol'] },
       { id: 'integ_ii', nombre: 'Odontología Integrada II', semestre: 2, prereq: ['integ_i'] },
       { id: 'electivo1', nombre: 'Electivo 1 Odontología', semestre: 2, prereq: [] },
-      // Semestre 3
       { id: 'evidencia', nombre: 'Salud Basada en la Evidencia', semestre: 3, prereq: [] },
       { id: 'fisio_i', nombre: 'Fisiología General y Oral I', semestre: 3, prereq: ['bucomax'] },
       { id: 'integ_iii', nombre: 'Odontología Integrada III', semestre: 3, prereq: ['integ_ii'] },
       { id: 'imagen_i', nombre: 'Imagenología Oral y Maxilofacial I', semestre: 3, prereq: ['bucomax'] },
       { id: 'perio_endo_i', nombre: 'Periodoncia y Endodoncia I', semestre: 3, prereq: ['bioquim_micro'] },
       { id: 'electivo2', nombre: 'Electivo 2 Odontología', semestre: 3, prereq: [] },
-      // Semestre 4
       { id: 'fisio_ii', nombre: 'Fisiología General y Oral II', semestre: 4, prereq: ['fisio_i'] },
       { id: 'patologia_gen', nombre: 'Patología e Inmunología General', semestre: 4, prereq: ['histologia'] },
       { id: 'integ_iv', nombre: 'Odontología Integrada IV', semestre: 4, prereq: ['integ_iii'] },
@@ -120,35 +118,33 @@
       { id: 'farmacologia', nombre: 'Farmacología', semestre: 4, prereq: ['fisio_i', 'bioquim_micro'] },
       { id: 'perio_endo_ii', nombre: 'Periodoncia y Endodoncia II', semestre: 4, prereq: ['perio_endo_i'] },
       { id: 'electivo3', nombre: 'Electivo 3 Odontología', semestre: 4, prereq: [] },
-      // Semestre 5
       { id: 'psico_salud', nombre: 'Psicología para la Atención en Salud', semestre: 5, prereq: [] },
-      { id: 'cariologia', nombre: 'Cariología Clínica', semestre: 5, prereq: ['imagen_ii', 'integ_iv'] },
-      { id: 'integral_adulto_i', nombre: 'Odontología Integral del Adulto y Odontogeriatría I', semestre: 5, prereq: ['integ_iv', 'perio_endo_ii'] },
+      { id: 'adulto_i', nombre: 'Odontología Integral del Adulto y Odontogeriatría I', semestre: 5, prereq: ['integ_iv', 'perio_endo_ii'] },
       { id: 'patologia_oral_i', nombre: 'Patología Oral I', semestre: 5, prereq: ['patologia_gen'] },
       { id: 'tto_oclusion_i', nombre: 'Trastornos Temporomandibulares y Oclusión I', semestre: 5, prereq: ['fisio_ii'] },
       { id: 'semiologia', nombre: 'Semiología y Anestesiología', semestre: 5, prereq: ['farmacologia', 'patologia_gen'] },
+      { id: 'cariologia', nombre: 'Cariología Clínica', semestre: 5, prereq: ['imagen_ii', 'integ_iv'] },
       { id: 'electivo4', nombre: 'Electivo 4 Odontología', semestre: 5, prereq: [] },
-      // Semestre 6
-      { id: 'integral_adulto_i_b', nombre: 'Odontología Integral del Adulto y Odontogeriatría I (continuación)', semestre: 6, prereq: ['integral_adulto_i'] },
+      { id: 'adulto_i_b', nombre: 'Odontología Integral del Adulto y Odontogeriatría I (continuación)', semestre: 6, prereq: ['adulto_i'] },
       { id: 'o_beleysd', nombre: 'Odontología Basada en la Evidencia y Salud Digital', semestre: 6, prereq: ['evidencia'] },
       { id: 'patologia_oral_ii', nombre: 'Patología Oral II', semestre: 6, prereq: ['patologia_oral_i'] },
       { id: 'tto_oclusion_ii', nombre: 'Trastornos Temporomandibulares y Oclusión II', semestre: 6, prereq: ['tto_oclusion_i'] },
       { id: 'cirugia_oral_i', nombre: 'Cirugía Oral I', semestre: 6, prereq: ['semiologia'] },
       { id: 'calidad_seguridad', nombre: 'Calidad, Seguridad y Acreditación en Odontología', semestre: 6, prereq: ['semiologia'] },
       { id: 'electivo5', nombre: 'Electivo 5 Odontología', semestre: 6, prereq: [] },
-      // Semestre 7 y 8 y 9 etc.
       { id: 'bioetica', nombre: 'Bioética', semestre: 7, prereq: [] },
-      { id: 'integral_adulto_ii', nombre: 'Odontología Integral del Adulto y Odontogeriatría II', semestre: 7, prereq: ['integral_adulto_i_b', 'cariologia'] },
-      { id: 'integral_nino_i', nombre: 'Odontología Integral del Niño y Ortodoncia I', semestre: 7, prereq: ['cariologia', 'tto_oclusion_i'] },
+      { id: 'ia_salud', nombre: 'Inteligencia Artificial Aplicada a la Salud', semestre: 7, prereq: [] },
+      { id: 'adulto_ii', nombre: 'Odontología Integral del Adulto y Odontogeriatría II', semestre: 7, prereq: ['adulto_i_b', 'cariologia'] },
+      { id: 'nino_i', nombre: 'Odontología Integral del Niño y Ortodoncia I', semestre: 7, prereq: ['cariologia', 'tto_oclusion_i'] },
       { id: 'legal_forense', nombre: 'Odontología Legal y Forense', semestre: 7, prereq: ['o_beleysd'] },
       { id: 'cirugia_oral_ii', nombre: 'Cirugía Oral II', semestre: 7, prereq: ['cirugia_oral_i'] },
       { id: 'salud_publica', nombre: 'Salud Pública y Epidemiología', semestre: 8, prereq: [] },
       { id: 'atencion_necesidades', nombre: 'Atención Personas con Necesidades Especiales y Cuidados Paliativos', semestre: 8, prereq: ['legal_forense'] },
       { id: 'cirugia_oral_iii', nombre: 'Cirugía Oral III', semestre: 8, prereq: ['cirugia_oral_ii'] },
-      { id: 'integral_adulto_iii', nombre: 'Odontología Integral del Adulto y Odontogeriatría III', semestre: 9, prereq: ['integral_adulto_ii'] },
-      { id: 'integral_nino_ii', nombre: 'Odontología Integral del Niño y Ortodoncia II', semestre: 9, prereq: ['integral_nino_i'] },
       { id: 'met_investigacion', nombre: 'Métodos de Investigación en Salud y Bioestadística Aplicada', semestre: 9, prereq: [] },
       { id: 'gestion_salud', nombre: 'Gestión en Sistemas de Salud', semestre: 9, prereq: ['salud_publica'] },
+      { id: 'adulto_iii', nombre: 'Odontología Integral del Adulto y Odontogeriatría III', semestre: 9, prereq: ['adulto_ii'] },
+      { id: 'nino_ii', nombre: 'Odontología Integral del Niño y Ortodoncia II', semestre: 9, prereq: ['nino_i'] },
       { id: 'medicina_oral_i', nombre: 'Medicina Oral y Urgencia Odontológica I', semestre: 9, prereq: [] },
       { id: 'trabajo_inv', nombre: 'Trabajo de Investigación', semestre: 10, prereq: ['met_investigacion'] },
       { id: 'medicina_oral_ii', nombre: 'Medicina Oral y Urgencia Odontológica II', semestre: 10, prereq: ['medicina_oral_i', 'gestion_salud'] },
@@ -156,20 +152,20 @@
       { id: 'internado', nombre: 'Internado Asistencial Docente', semestre: 11, prereq: [] },
       { id: 'curso_infecciones', nombre: 'Curso de Infecciones Asociadas a Atención de Salud', semestre: 11, prereq: [] },
       { id: 'curso_proteccion', nombre: 'Curso de Protección Radiológica', semestre: 11, prereq: [] },
-      { id: 'gestion_emprendimiento', nombre: 'Gestión de Emprendimiento y Accountability en Odontología', semestre: 11, prereq: [] }
+      { id: 'gestion_emprendimiento', nombre: 'Gestión de Emprendimiento y Accountability en Odontología', semestre: 11, prereq: [] },
+      { id: 'licenciatura', nombre: 'Licenciatura (11 y 12)', semestre: 12, prereq: [] }
     ];
-
-    const ramosAnuales = new Set([
-      'integral_adulto_ii', 'integral_adulto_iii',
-      'integral_nino_i', 'integral_nino_ii',
-      'curso_infecciones', 'curso_proteccion',
-      'gestion_emprendimiento'
-    ]);
+    const sincronizados = [
+      ['adulto_i', 'adulto_i_b'],
+      ['nino_i', 'nino_i'],
+      ['adulto_ii', 'adulto_ii'],
+      ['nino_ii', 'nino_ii']
+    ];
+    const ramosAnuales = new Set(['adulto_i', 'adulto_i_b', 'nino_i', 'nino_ii']);
 
     function prereqsAprobados(prereqs, estado) {
       return prereqs.every(id => estado[id]);
     }
-
     function guardar() {
       const estado = {};
       ramos.forEach(r => {
@@ -178,91 +174,92 @@
       });
       localStorage.setItem('estadoMallaGaby', JSON.stringify(estado));
     }
-
     function cargar() {
       return JSON.parse(localStorage.getItem('estadoMallaGaby')) || {};
     }
-
     function crearMalla() {
       const cont = document.getElementById("malla");
       cont.innerHTML = "";
       const estado = cargar();
-
       for (let año = 1; año <= 6; año++) {
         const grid = document.createElement("div");
         grid.className = "anio";
-
         const labelAño = document.createElement("div");
         labelAño.className = "anio-label";
         labelAño.textContent = `Año ${año}`;
         grid.appendChild(labelAño);
-
         const sem1 = document.createElement("div");
         sem1.className = "semestre";
-        sem1.innerHTML = `<h3>Sem ${(año - 1) * 2 + 1}</h3>`;
+        const h1 = document.createElement("h3");
+        h1.textContent = `Semestre ${(año - 1) * 2 + 1}`; sem1.appendChild(h1);
         const sem2 = document.createElement("div");
         sem2.className = "semestre";
-        sem2.innerHTML = `<h3>Sem ${(año - 1) * 2 + 2}</h3>`;
-
+        const h2 = document.createElement("h3");
+        h2.textContent = `Semestre ${(año - 1) * 2 + 2}`; sem2.appendChild(h2);
         grid.appendChild(sem1);
         grid.appendChild(sem2);
-
-        const mostrados = new Set();
-
-        // Anauales
+        const yaMostrados = new Set();
         ramos.forEach(r => {
           const sem = r.semestre;
-          if (Math.ceil(sem / 2) !== año) return;
-          if (!ramosAnuales.has(r.id)) return;
-          if (mostrados.has(r.id)) return;
-          mostrados.add(r.id);
-          const div = crearMateriaDiv(r, estado);
-          div.classList.add("anual");
-          grid.appendChild(div);
+          const currentYear = Math.ceil(sem / 2);
+          if (currentYear !== año) return;
+          if (ramosAnuales.has(r.id)) {
+            const duplicado = sincronizados.find(pair => pair.includes(r.id));
+            const idMostrar = duplicado ? duplicado[0] : r.id;
+            if (yaMostrados.has(idMostrar)) return;
+            yaMostrados.add(idMostrar);
+          }
+          const div = document.createElement("div");
+          div.className = "materia";
+          const check = document.createElement("input");
+          check.type = "checkbox"; check.id = r.id;
+          check.checked = !!estado[r.id];
+          const habil = prereqsAprobados(r.prereq, estado);
+          if (!habil) { check.disabled = true; div.classList.add("disabled"); check.checked = false; }
+          else if (check.checked) div.classList.add("aprobado");
+          check.addEventListener("change", () => {
+            sincronizados.forEach(pair => {
+              if (pair.includes(r.id)) pair.forEach(id => {
+                const cb = document.getElementById(id);
+                if (cb && cb !== check) cb.checked = check.checked;
+              });
+            });
+            actualizar(); guardar();
+          });
+          const label = document.createElement("label");
+          label.htmlFor = r.id; label.textContent = r.nombre;
+          div.appendChild(check); div.appendChild(label);
+          if (ramosAnuales.has(r.id)) {
+            div.classList.add("anual"); grid.appendChild(div);
+          } else {
+            const target = sem % 2 === 1 ? sem1 : sem2;
+            target.appendChild(div);
+          }
         });
-
-        // Semestrales
-        ramos.forEach(r => {
-          const sem = r.semestre;
-          if (Math.ceil(sem / 2) !== año) return;
-          if (ramosAnuales.has(r.id)) return;
-          const div = crearMateriaDiv(r, estado);
-          (sem % 2 ? sem1 : sem2).appendChild(div);
-        });
-
         cont.appendChild(grid);
       }
     }
-
-    function crearMateriaDiv(r, estado) {
-      const div = document.createElement("div");
-      div.className = "materia";
-      const check = document.createElement("input");
-      check.type = "checkbox";
-      check.id = r.id;
-      check.checked = !!estado[r.id];
-      const habil = prereqsAprobados(r.prereq, estado);
-      if (!habil) {
-        check.disabled = true;
-        div.classList.add("disabled");
-      } else if (check.checked) {
-        div.classList.add("aprobado");
-      }
-      check.addEventListener("change", () => {
-        guardar(); crearMalla();
+    function actualizar() {
+      const estado = cargar();
+      ramos.forEach(r => {
+        const cb = document.getElementById(r.id);
+        const div = cb?.parentElement;
+        if (!cb || !div) return;
+        const habil = prereqsAprobados(r.prereq, estado);
+        if (!habil) {
+          cb.disabled = true; cb.checked = false;
+          div.classList.add("disabled"); div.classList.remove("aprobado");
+        } else {
+          cb.disabled = false;
+          if (cb.checked) div.classList.add("aprobado");
+          else div.classList.remove("aprobado");
+        }
       });
-      const label = document.createElement("label");
-      label.htmlFor = r.id;
-      label.textContent = r.nombre;
-      div.appendChild(check); div.appendChild(label);
-      return div;
     }
-
     function resetearMalla() {
-      localStorage.removeItem('estadoMallaGaby');
+      localStorage.removeItem("estadoMallaGaby");
       crearMalla();
     }
-
     crearMalla();
   </script>
 </body>
