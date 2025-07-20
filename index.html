@@ -144,7 +144,9 @@
       { id: 'met_investigacion', nombre: 'Métodos de Investigación en Salud y Bioestadística Aplicada', semestre: 9, prereq: [] },
       { id: 'gestion_salud', nombre: 'Gestión en Sistemas de Salud', semestre: 9, prereq: ['salud_publica'] },
       { id: 'adulto_iii', nombre: 'Odontología Integral del Adulto y Odontogeriatría III', semestre: 9, prereq: ['adulto_ii'] },
+      { id: 'adulto_iii_b', nombre: 'Odontología Integral del Adulto y Odontogeriatría III (continuación)', semestre: 10, prereq: ['adulto_iii'] },
       { id: 'nino_ii', nombre: 'Odontología Integral del Niño y Ortodoncia II', semestre: 9, prereq: ['nino_i'] },
+      { id: 'nino_ii_b', nombre: 'Odontología Integral del Niño y Ortodoncia II (continuación)', semestre: 10, prereq: ['nino_ii'] },
       { id: 'medicina_oral_i', nombre: 'Medicina Oral y Urgencia Odontológica I', semestre: 9, prereq: [] },
       { id: 'trabajo_inv', nombre: 'Trabajo de Investigación', semestre: 10, prereq: ['met_investigacion'] },
       { id: 'medicina_oral_ii', nombre: 'Medicina Oral y Urgencia Odontológica II', semestre: 10, prereq: ['medicina_oral_i', 'gestion_salud'] },
@@ -158,11 +160,12 @@
     const sincronizados = [
       ['adulto_i', 'adulto_i_b'],
       ['nino_i', 'nino_i'],
-      ['adulto_ii', 'adulto_ii'],
+      ['adulto_ii', 'nino_ii_b'],
       ['nino_ii', 'nino_ii']
-      ['adulto_iii', 'adulto_iii']
+      ['adulto_iii', 'adulto_iii_b'],
     ];
-    const ramosAnuales = new Set(['adulto_i', 'adulto_i_b', 'nino_i', 'nino_ii', 'adulto_iii', 'adulto_ii']);
+    const ramosAnuales = new Set(['adulto_i', 'adulto_i_b', 'adulto_ii', 'adulto_ii_b', 'adulto_iii', 'adulto_iii_b', 'nino_i', 'nino_i_b', 'nino_ii', 'nino_ii_b']);
+
 
     function prereqsAprobados(prereqs, estado) {
       return prereqs.every(id => estado[id]);
